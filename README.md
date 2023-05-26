@@ -1,92 +1,97 @@
-# piterflix
+# Piterflix
+## Proyecto de streaming con Laravel
 
+Página web de visualización de productos audiovisuales en streaming.
 
+<br/>
 
-## Getting started
+## Arrancar la página
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+email: admin@admin.com  
+password: password
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+Una vez que ejecutemos las migrations y los seeders se cargarán la base de datos con todo el contenido necesario. La mayor parte de ese contenido es contenido real extraído de una API, otro contenido como la asignación de productoras, directores o intérpretes se realiza de manera aleatoria para ejemplificar el funcionamiento de la página.
 
-## Add your files
+**Administrador**
+Los seeders crearán un total de 6 cuentas. Cada una de estas cuentas tiene un email y una contraseña para acceder a la base de datos.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+* La contraseña para TODAS las cuentas generadas por el seeder es _password_, la contraseña está hasheada así que en la base de datos aparecerá encriptada.
+* Las cuentas son las que están o no autenticadas. Cada cuenta puede tener más de un usuario. Los seeders crearán un total de 19 usuarios, 3 para cada cuenta más un usuario extra para la primera cuenta que se diferenciará del resto de usuarios porque tendrá asignado el rol de Admin.
+* Al logearse automáticamente se guardará el primer usuario de la cuenta en sesión como "_current_user_". Al logearnos la página nos llevará a una vista en la que deberemos elegir con qué usuario de esa cuenta queremos entrar y en ese momento se reasignará el "_current_user_" por aquel que hayamos elegido.
+* Para acceder como administrador deberemos acceder con el correo "_admin@admin.com_" y la contraseña _password_. En ese momento el usuario Administrador ya será el "_current_user_" de la sesión actual pero si elegimos otro usuario dentro de la misma cuenta, dejaremos de ser un usuario administrado.
+* Una vez que accedemos y elegimos usuario nos llevará a nuestra vista de perfil de usuario donde podremos cambiar algunos datos del usuario como el avator o el nombre.
+* Una vez hayamos accedido con nuestra cuenta autenticada veremos en la parte superior derecha de la pantalla que se ha generado un desplegable donde antes estaban los botones de "entrar" y "suscribirse".
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/pedromunozreynes/piterflix.git
-git branch -M main
-git push -uf origin main
-```
+## Mi cuenta
 
-## Integrate with your tools
+En el desplegable podremos acceder a nuestro perfil de usuario o a nuestra cuenta. Todos los usuarios de una cuenta tienen el mismo rol y cualquiera de ellos puede crear nuevos usuarios (hasta un máximo de 4), eliminar usuario, acceder al perfil de otros usuario, cambiar la contraseña de la cuenta y eliminar la cuenta.
 
-- [ ] [Set up project integrations](https://gitlab.com/pedromunozreynes/piterflix/-/settings/integrations)
+## Acceder al panel de administrador
 
-## Collaborate with your team
+Si hemos accedido con la cuenta de administrador y como usuario administrador, en el desplegable que sale en la esquina superior derecha, al lado del formulario de búsqueda, veremos que tenemos una opción que pone **Panel de administrador**. Desde ahí podremos acceder a la interfaz del administrador.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+## Suscripción de un nuevo usuario
 
-## Test and Deploy
+En la vista de suscripción veremos un formulario que validará:
+ * Que la contraseña sea de un formato correcto (tiene que tener letras y números)  
+ * Que el usuario con el que se inicia la cuenta sea mayor de edad  
+ * Que el email que se intenta registrar no esté en uso  
+ * Que estén todos los campos rellenados
 
-Use the built-in continuous integration in GitLab.
+ El formulario también nos ará elegir entre un plan básico y otro prémium.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+ Acto seguido no llevará a otro formulario que nos pedirá los datos de pago. Estos pueden ser con una tarjeta de crédito, con paypal o con un cupón de suscripción. En la base de datos se registrará en numero de cuenta si ese ha sido el método de pago elegido.
 
-***
+ Con los datos recogidos en estos dos formularios se creará:
 
-# Editing this README
+ * La cuenta
+ * El primer usuario de la cuenta con el nombre de usuario elegido y la fecha de nacimiento. El usuario deberá cambiar su avatar en su perfil.
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+## ¿Qué muestran las vistas?
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+* **Principal:** muestra una selección aleatoria de medias, tanto películas como series dividida por géneros.
+* **Películas:** muestra todas las medias de la base de datos que tiene como tipo "película".
+* **Series:** muestra todas las medias de la base de datos que tiene como tipo "serie".
+* **Recomendados:** muestra una lista de un máximo de 10 películas que las extrae haciendo una selección de las medias con aquellos géneros que más se repiten en la base de datos para ese usuario ("current_user"). Para hacer la selección tiene en cuenta las descargas del usuario, las reproducciones y los favoritos. Selecciona los 3 generos que más se repiten y muestra en la vista aquellas medias de esos géneros que el usuario todavía no tiene entre sus descargas, reproducciones ni favoritos. En caso de que la vista esté totalmente vacía (usuarios recientes o poco activos), se genera una vista aleatoria de 10 medias.
+* **Novedades:** muestra las últimas medias incluídas en la base de datos.
+* **Próximamente:** muestra las medias cuya fecha de lanzamiento es más reciente incluso cuando aún no se haya alcanzado esa fecha. De esta manera si hay películas que están por salir al mercado pero que se encuentran en la base de datos las mostrará las primeras.
 
-## Name
-Choose a self-explaining name for your project.
+## Wireframes
+<br/>
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+- **Inicio**
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+    <image src="./documentacion/netflixClon.drawio.png" width="75%" height="75%">
+    
+<br/><br/><br/>
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+- **Peliculas/Series/Novedades/Recomendados**
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+    <image src="./documentacion/listaNetflixClon.drawio.png" width="75%" height="75%">
+<br/><br/><br/>
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+- **Registro**  
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+    <image src="./documentacion/registroNetflixClon.drawio.png" width="75%" height="75%">
+<br/><br/><br/>
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+- **Pago**  
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+    <image src="./documentacion/pagoNetflixClon.drawio.png" width="75%" height="75%">
+<br/><br/><br/>
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+- **Login**  
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+    <image src="./documentacion/loginNetflixClon.drawio.png" width="75%" height="75%">
+<br/><br/><br/>
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+- **Búsqueda**  
 
-## License
-For open source projects, say how it is licensed.
+    <image src="./documentacion/busquedaNetflixClon.drawio.png" width="75%" height="75%">
+<br/><br/><br/>
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+# Base de datos
+<br/><br/>
+<image src="./documentacion/piterflix_bbdd.drawio.png">
+<br/><br/><br/>
+

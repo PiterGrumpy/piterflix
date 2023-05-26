@@ -1,0 +1,1 @@
+<?php return [ 'API_KEY' =>'635963ef25d70337f7d97e59cd9e27ec', 'API_URL' =>'https://api.themoviedb.org/3', 'API_IMG' => 'https://image.tmdb.org/t/p/original' ];
